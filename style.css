@@ -1,0 +1,38 @@
+* {
+    padding: 0;
+    margin: 0;
+    transition: all 1s;
+}
+body {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+img {
+    position: fixed;
+    transition: all 1s linear;
+}
+
+.hr {
+    padding: 0;
+    height: 1px;
+    width: 100%;
+    background-color: red;
+    position: fixed;
+}
+
+#hrbottom {
+    /* background-color: blue; */
+}
+
+.vr {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: red;
+}
+
+#vrright {
+    /* background-color: aquamarine; */
+}

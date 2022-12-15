@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <img onclick="nextSlide()" id="image" src="img/image.jpg" alt="The total image of the presentation">
+    <dv class="hr" id="hrtop">
+    <div class="hr" id="hrbottom">
+    <div class="vr" id="vrleft"></div>
+    <div class="vr" id="vrright"></div>
+
+</body>
+
+<script>
+    var originalWidth = 2000;
+    var originalHeight = 1200;
+    class Aspect {
+        constructor(l,r,t,b){
+            this.l = l;
+            this.r = r;
+            this.t = t;
+            this.b = b;
+        }
+    }
+    let currentLeft = 0;
+    let currentTop = 0;
+    let currentWidth = 0;
+    let currentHeight = 0;
+
+    let aspects = []
+
+    aspects.push(new Aspect(0, 2000, 0, 1200))
+    aspects.push(new Aspect(550, 1250, 0, 900))
+    aspects.push(new Aspect(0,1000,0,600))
+    aspects.push(new Aspect(650, 820, 375, 580))
+    aspects.push(new Aspect(850, 1010, 320, 500))
+
+    var image = document.getElementById("image")
+    setImageAttrs(image, 0, 0, 1000, 600)
+    applyAspect(aspects[0])
+
+    function applyAspect(aspect){
+        var l = aspect.l;
+        var r = aspect.r;
+        var t = aspect.t;
+        var b = aspect.b;
+        var aspWidth = r - l;
+        var aspHeight = b - t;
+        var sceneWidth = window.innerWidth;
+        var sceneHeight = window.innerHeight;
+
+        var slideWidth = 0;
+        var slideHeight = 0;
+        var slideTop = 0;
+        var slideLeft = 0;
+        var image = document.getElementById("image");
+
+        var hrTop = 0;
+        var hrBottom = sceneHeight-1;
+        var vrLeft = 0;
+        var vrRight = sceneWidth - 1;
+        var scale = 0
+        if(aspWidth/sceneWidth > aspHeight/sceneHeight){// w is larger
+            scale = sceneWidth / aspWidth;
+            slideWidth = originalWidth * scale;
+            slideHeight = originalHeight * scale;
+            slideLeft = - l * scale;
+    
+            var B = t * scale;
+            var C = (sceneHeight - aspHeight * scale) / 2;
+            A = B - C;
+            slideTop = -A;
+            image.style.top = slideTop.toString() + "px";
+            
+            hrTop = C;
+            hrBottom = C + aspHeight * scale;
+        }else {
+            scale = sceneHeight / aspHeight;
+            slideWidth = originalWidth * scale;
+            slideHeight = originalHeight * scale;
+            slideTop = - t * scale;
+
+            var y = l * scale;
+            var z = (sceneWidth - aspWidth * scale) / 2;
+            var x = y - z;
+            slideLeft = -x;
+
+            vrLeft = z;
+            vrRight = z + aspWidth * scale;
+        }
+
+        image.style.width = slideWidth.toString() + "px";
+        image.style.left = slideLeft.toString() + "px";
+        image.style.height = slideHeight.toString() + "px";
+        image.style.top = slideTop.toString() + "px";
+        image.getBoundingClientRect().top
+
+        document.getElementById("hrtop").style.top = hrTop.toString() + "px";
+        document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
+        document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
+        document.getElementById("vrright").style.left = vrRight.toString() + "px";
+
+    }
+
+    function setImageAttrs(image, top, left, width, height){
+        image.style.top = top.toString() + "px";
+        image.style.left = left.toString() + "px";
+        image.style.width = width.toString() + "px";
+        image.style.height = height.toString() + "px";
+    }
+    slide = 0;
+    function nextSlide(){
+        applyAspect(aspects[slide])
+        slide = (slide + 1) % aspects.length
+    }
+
+    // var t = (sceneHeight - aspHeight) / 2
+    // image.style.top = t.toString() + "px";
+    // alrt(t.toString())
+    
+    // image.style.height = "60px";
+
+
+</script>
+
+</html>
