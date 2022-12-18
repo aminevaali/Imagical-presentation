@@ -21,9 +21,9 @@ Then with any software of your choice, create a photo for your presentation. Pre
 
 ### Add some aspects of your image
 Find pixel addresses of corners in a desired software. Then add an aspect to your presentation like below. you can find such codes in <script> tag in index.html file.
-`
+```js
 aspects.push(new Aspect(0, 813, 0, 1343))
-`
+```
 The first parameter is left side of the aspect, second one for right side, third one for top side and fourth one for bottom side.
 
 ## Do your best!
