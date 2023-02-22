@@ -36,3 +36,23 @@ img {
 #vrright {
     /* background-color: aquamarine; */
 }
+
+.toolbar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar .tool {
+    margin: 10px;
+}
+
+#aspect-text {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    background-color: rebeccapurple;
+}
