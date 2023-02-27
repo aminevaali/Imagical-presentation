@@ -158,13 +158,16 @@
     document.addEventListener("keydown", keyHandler, false);
     function keyHandler(e){
         keyCode = e.keyCode
+        console.log(keyCode);
         switch(keyCode){
             case 32: // space
             case 13: // enter
             case 39: // right arrow
+            case 34: // for slide next button
                 nextSlide();
                 break;
             case 37: // left arrow
+            case 33: // for slide previous button
                 previousSlide();
                 break;
         }
