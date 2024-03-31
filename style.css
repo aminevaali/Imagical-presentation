@@ -3,11 +3,13 @@
     margin: 0;
     transition: all 0.7s;
 }
+
 body {
     position: relative;
     width: 100%;
     height: 100vh;
 }
+
 img {
     position: fixed;
     transition: all 1s linear;
@@ -21,10 +23,6 @@ img {
     position: fixed;
 }
 
-#hrbottom {
-    /* background-color: blue; */
-}
-
 .vr {
     position: fixed;
     top: 0;
@@ -33,20 +31,17 @@ img {
     background-color: red;
 }
 
-#vrright {
-    /* background-color: aquamarine; */
-}
-
 .toolbar {
+    display: none;
     position: fixed;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
+    left: 10px;
+    top: 5px;
+    /*flex-direction: column;*/
 }
 
-.toolbar .tool {
-    margin: 10px;
+.photos {
+    width: 25px;
+    height: 25px;
 }
 
 #aspect-text {
@@ -55,4 +50,88 @@ img {
     bottom: 0;
     padding: 10px;
     background-color: rebeccapurple;
+}
+
+.centerSelect {
+    display: block;
+    width: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.centerCanvas {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.centerPhoto {
+    width: 70%;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.topCenterSelect {
+    width: 70%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.topLeftSelect {
+    width: 20%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.button-89 {
+    --b: 3px; /* border thickness */
+    --s: .45em; /* size of the corner */
+    --color: #373B44;
+
+    padding: calc(.5em + var(--s)) calc(.9em + var(--s));
+    color: var(--color);
+    --_p: var(--s);
+    background: conic-gradient(from 90deg at var(--b) var(--b), #0000 90deg, var(--color) 0) var(--_p) var(--_p)/calc(100% - var(--b) - 2 * var(--_p)) calc(100% - var(--b) - 2 * var(--_p));
+    transition: .3s linear, color 0s, background-color 0s;
+    outline: var(--b) solid #0000;
+    outline-offset: .6em;
+    font-size: 16px;
+
+    border: 0;
+
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-89:hover,
+.button-89:focus-visible {
+    --_p: 0px;
+    outline-color: var(--color);
+    outline-offset: .05em;
+}
+
+.button-89:active {
+    background: var(--color);
+    color: #fff;
+}
+
+body {
+    background-color: ivory;
+}
+
+#canvas {
+    border: 1px solid blue;
+
 }

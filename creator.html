@@ -1,185 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Imagical Presentation</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="flowbite.css">
 </head>
-<body>
-    <img id="image" src="img/image.svg" alt="The total image of the presentation">
-    <dv class="hr" id="hrtop">
-    <div class="hr" id="hrbottom">
-    <div class="vr" id="vrleft"></div>
-    <div class="vr" id="vrright"></div>
 
-    <div class="toolbar">
-        <button class="tool" onclick="hzoomin()">horizontal zoom in</button>
-        <button class="tool" onclick="hzoomout()">horizontal zoom out</button>
-        <button class="tool" onclick="vzoomin()">vertical zoom in</button>
-        <button class="tool" onclick="vzoomout()">vertical zoom out</button>
-        <button class="tool" onclick="rightMove()">right</button>
-        <button class="tool" onclick="leftMove()">left</button>
-        <button class="tool" onclick="topMove()">top</button>
-        <button class="tool" onclick="bottomMove()">bottom</button>
+<body>
+<div>
+    <div id="select-file-div" class="centerSelect">
+        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+               aria-describedby="file_input_help" id="file_input" type="file" onchange="preview_image(event)">
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or ...</p>
+
+        <div style="float: right">
+            <button onclick="displayImage()" class="button-89" role="button">Make It Imagical</button>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div id="photo-div" style="display: none;">
+        <img id='image' alt="The Photo"/>
     </div>
 
-    <span id="aspect-text">
+    <div class="centerCanvas">
+        <canvas id="canvas" width="100%" height="100%" style="display: none; overflow: scroll;"></canvas>
+    </div>
+</div>
 
+<div>
+    <div id="toolbar" class="toolbar">
+        <button class="photos" onclick="hzoomin()">
+            <img class="photos" src="img/HzoomIn.png" alt="HzoomIn"/>
+        </button>
+        <button class="photos" onclick="hzoomout()">
+            <img class="photos" src="img/HzoomOut.png" alt="HzoomOut"/>
+        </button>
+        <button class="photos" onclick="vzoomin()">
+            <img class="photos" src="img/VzoomIn.png" alt="VzoomIn"/>
+        </button>
+        <button class="photos" onclick="vzoomout()">
+            <img class="photos" src="img/VzoomOut.png" alt="VzoomOut"/>
+        </button>
+        <button class="photos" onclick="rightMove()">
+            <img class="photos" src="img/right.png" alt="right"/>
+        </button>
+        <button class="photos" onclick="leftMove()">
+            <img class="photos" src="img/left.png" alt="left"/>
+        </button>
+        <button class="photos" onclick="upMove()">
+            <img class="photos" src="img/up.png" alt="up"/>
+        </button>
+        <button class="photos" onclick="downMove()">
+            <img class="photos" src="img/down.png" alt="down"/>
+        </button>
+    </div>
+
+    <span style="color: white;" id="aspect-text">
     </span>
-
+</div>
 </body>
 
 <script>
-    var originalWidth = 818;
-    var originalHeight = 1343;
+    let the_file;
+
+    let firstTime = true;
+    let firstMove = true;
+
+    let canvasPadding = 0;
+    let canvasScale = 0.95;
+
+    let originalWidth = window.innerWidth; //1343;
+    let originalHeight = window.innerHeight; //818;
+    // let originalWidth = screen.width;
+    // let originalHeight = screen.height;
+    // let DPR = window.devicePixelRatio;
+    // originalWidth = Math.round(DPR * originalWidth);
+    // originalHeight = Math.round(DPR * originalHeight);
+
+    let background = new Image();
+
+    function init() {
+        let width;
+        let height;
+
+        canvas = document.getElementById("canvas");
+
+        if (!firstTime) {
+            width = background.width + canvasPadding * 2;
+            height = background.height + canvasPadding * 2;
+
+            canvasOffset = canvas.getBoundingClientRect();
+            offsetX = canvasOffset.left;
+            offsetY = canvasOffset.top;
+
+            if (!firstMove)
+                return;
+            else {
+                firstMove = false;
+            }
+        } else {
+            width = document.body.clientWidth - 8;
+            height = document.body.clientHeight - 8;
+            firstTime = false;
+        }
+
+        canvas.width = width; //document.width is obsolete
+        canvas.height = height; //document.height is obsolete
+    };init();
+
     class Aspect {
-        constructor(l,r,t,b){
-            this.l = l;
-            this.r = r;
-            this.t = t;
-            this.b = b;
+        constructor(l, r, t, b) {
+            this.left = l;
+            this.right = r;
+            this.top = t;
+            this.bottom = b;
         }
     }
-    var aspect = new Aspect(0, originalWidth, 0, originalHeight);
 
-    var image = document.getElementById("image");
-    var aspectText = document.getElementById("aspect-text");
-    applyAspect(aspect);
+    function applyAspect2(aspect) {
+        // screen width and height
+        let aspWidth = aspect.right - aspect.left;
+        let aspHeight = aspect.bottom - aspect.top;
 
-    function applyAspect(aspect){
-        var l = aspect.l;
-        var r = aspect.r;
-        var t = aspect.t;
-        var b = aspect.b;
-        var aspWidth = r - l;
-        var aspHeight = b - t;
-        var sceneWidth = window.innerWidth;
-        var sceneHeight = window.innerHeight;
+        let sceneWidth = window.innerWidth;
+        let sceneHeight = window.innerHeight;
 
-        var slideWidth = 0;
-        var slideHeight = 0;
-        var slideTop = 0;
-        var slideLeft = 0;
-        var image = document.getElementById("image");
+        let slideWidth;
+        let slideHeight;
+        let slideTop;
+        let slideLeft;
 
-        var hrTop = 0;
-        var hrBottom = sceneHeight-1;
-        var vrLeft = 0;
-        var vrRight = sceneWidth - 1;
-        var scale = 0
-        if(aspWidth/sceneWidth > aspHeight/sceneHeight){// w is larger
-            scale = sceneWidth / aspWidth;
-            slideWidth = originalWidth * scale;
-            slideHeight = originalHeight * scale;
-            slideLeft = - l * scale;
-    
-            var B = t * scale;
-            var C = (sceneHeight - aspHeight * scale) / 2;
-            A = B - C;
+        let image = document.getElementById("canvas");
+
+        // red lines
+        let hrTop = 0;
+        let hrBottom = sceneHeight - 1;
+        let vrLeft = 0;
+        let vrRight = sceneWidth - 1;
+
+        // width is bigger than height
+        if (aspWidth / sceneWidth > aspHeight / sceneHeight) {
+            slideWidth = originalWidth;
+            slideHeight = originalHeight;
+            slideLeft = -aspect.left;
+
+            console.log("dishdish", slideWidth, slideHeight, slideLeft)
+
+            let B = aspect.top;
+            let C = (sceneHeight - aspHeight) / 2;
+            let A = B - C;
             slideTop = -A;
             image.style.top = slideTop.toString() + "px";
-            
+
             hrTop = C;
-            hrBottom = C + aspHeight * scale;
-        }else {
+            hrBottom = C + aspHeight;
+
+        } else {
             scale = sceneHeight / aspHeight;
+
             slideWidth = originalWidth * scale;
             slideHeight = originalHeight * scale;
-            slideTop = - t * scale;
+            slideTop = -aspect.top * scale;
 
-            var y = l * scale;
-            var z = (sceneWidth - aspWidth * scale) / 2;
-            var x = y - z;
+            console.log("dishdish2", scale, slideWidth, slideHeight, slideTop)
+
+            let y = aspect.left * scale;
+            let z = (sceneWidth - aspWidth * scale) / 2;
+            let x = y - z;
             slideLeft = -x;
 
             vrLeft = z;
             vrRight = z + aspWidth * scale;
         }
 
-        image.style.width = slideWidth.toString() + "px";
-        image.style.left = slideLeft.toString() + "px";
-        image.style.height = slideHeight.toString() + "px";
-        image.style.top = slideTop.toString() + "px";
-        image.getBoundingClientRect().top
-
-        document.getElementById("hrtop").style.top = hrTop.toString() + "px";
-        document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
-        document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
-        document.getElementById("vrright").style.left = vrRight.toString() + "px";
-
-        aspectText.innerHTML = "";
-        aspectText.innerHTML += "L: " + aspect.l + ", R: " + aspect.r + ", T: " + aspect.t + ", B:" + aspect.b; 
+        // image.style.width = slideWidth.toString() + "px";
+        // image.style.left = slideLeft.toString() + "px";
+        // image.style.height = slideHeight.toString() + "px";
+        // image.style.top = slideTop.toString() + "px";
+        // image.getBoundingClientRect().top
+        //
+        // document.getElementById("hrtop").style.top = hrTop.toString() + "px";
+        // document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
+        // document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
+        // document.getElementById("vrright").style.left = vrRight.toString() + "px";
+        //
+        // aspectText.innerHTML = "";
+        // aspectText.innerHTML += "L: " + aspect.left + ", R: " + aspect.right + ", T: " + aspect.top + ", B:" + aspect.bottom;
     }
 
-    /*
-    document.addEventListener("keydown", keyHandler, false);
-    function keyHandler(e){
-        keyCode = e.keyCode
-        switch(keyCode){
-            case 32: // space
-            case 13: // enter
-            case 39: // right arrow
-                nextSlide();
-                break;
-            case 37: // left arrow
-                previousSlide();
-                break;
+    function applyAspect(aspect) {
+        // screen width and height
+        let aspWidth = aspect.right - aspect.left;
+        let aspHeight = aspect.bottom - aspect.top;
+
+        let sceneWidth = window.innerWidth;
+        let sceneHeight = window.innerHeight;
+
+        let slideWidth;
+        let slideHeight;
+        let slideTop;
+        let slideLeft;
+
+        let image = document.getElementById("canvas");
+
+        // red lines
+        let hrTop = 0;
+        let hrBottom = sceneHeight - 1;
+        let vrLeft = 0;
+        let vrRight = sceneWidth - 1;
+
+        let scale;
+
+        // width is bigger than height
+        if (aspWidth / sceneWidth > aspHeight / sceneHeight) {
+            scale = sceneWidth / aspWidth;
+
+            slideWidth = originalWidth * scale;
+            slideHeight = originalHeight * scale;
+            slideLeft = -aspect.left * scale;
+
+            console.log("dishdish", scale, slideWidth, slideHeight, slideLeft)
+
+            let B = aspect.top * scale;
+            let C = (sceneHeight - aspHeight * scale) / 2;
+            let A = B - C;
+            slideTop = -A;
+            image.style.top = slideTop.toString() + "px";
+
+            hrTop = C;
+            hrBottom = C + aspHeight * scale;
+
+        } else {
+            scale = sceneHeight / aspHeight;
+
+            slideWidth = originalWidth * scale;
+            slideHeight = originalHeight * scale;
+            slideTop = -aspect.top * scale;
+
+            console.log("dishdish2", scale, slideWidth, slideHeight, slideTop)
+
+            let y = aspect.left * scale;
+            let z = (sceneWidth - aspWidth * scale) / 2;
+            let x = y - z;
+            slideLeft = -x;
+
+            vrLeft = z;
+            vrRight = z + aspWidth * scale;
         }
-    }
-    */
-    window.onresize = function(event){
-        applyAspect(aspect)
+
+        // image.style.width = slideWidth.toString() + "px";
+        // image.style.left = slideLeft.toString() + "px";
+        // image.style.height = slideHeight.toString() + "px";
+        // image.style.top = slideTop.toString() + "px";
+        // image.getBoundingClientRect().top
+        //
+        // document.getElementById("hrtop").style.top = hrTop.toString() + "px";
+        // document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
+        // document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
+        // document.getElementById("vrright").style.left = vrRight.toString() + "px";
+        //
+        // aspectText.innerHTML = "";
+        // aspectText.innerHTML += "L: " + aspect.left + ", R: " + aspect.right + ", T: " + aspect.top + ", B:" + aspect.bottom;
     }
 
-    function hzoomin(){
-        aspect.l += 10;
-        aspect.r -= 10;
-        applyAspect(aspect);
+    function setImageAttrs(image, top, left, width, height) {
+        image.style.top = top.toString() + "px";
+        image.style.left = left.toString() + "px";
+        image.style.width = width.toString() + "px";
+        image.style.height = height.toString() + "px";
     }
 
-    function vzoomin(){
-        aspect.t += 10;
-        aspect.b -= 10;
-        applyAspect(aspect);
+    const aspect = new Aspect(0, originalWidth, 0, originalHeight);
+    const image = document.getElementById("image");
+    // const aspectText = document.getElementById("aspect-text");
+
+    function preview_image(event) {
+        the_file = event.target.files[0];
     }
 
-    function hzoomout(){
-        aspect.l -= 10;
-        aspect.r += 10;
-        applyAspect(aspect);
+    async function displayImage() {
+        let reader = new FileReader();
+        document.getElementById("select-file-div").style.display = "none";
+
+        reader.onload = function () {
+            let output = document.getElementById('image');
+            output.src = reader.result;
+
+            background.src = output.src.toString();
+            background.onload = function () {
+                ctx.drawImage(background, canvasPadding, canvasPadding, background.width, background.height);
+            }
+        }
+
+        reader.readAsDataURL(the_file);
+        await new Promise(r => setTimeout(r, 200));
+
+        // scale background
+        let newHeight = originalHeight * canvasScale;
+        background.width = background.width * newHeight / background.height;
+        background.height = newHeight;
+
+        canvas.style.display = "block";
+        init();
+        ctx.drawImage(background, canvasPadding, canvasPadding, background.width, background.height);
+
+        document.getElementById("toolbar").style.display  = "flex";
+        document.getElementById("toolbar").style.flexDirection  = "column";
+        // applyAspect(aspect);
     }
 
-    function vzoomout(){
-        aspect.t -= 10;
-        aspect.b += 10;
-        applyAspect(aspect);
+    // document.addEventListener("keydown", keyHandler, false);
+    //
+    // function keyHandler(e) {
+    //     let keyCode = e.keyCode;
+    //
+    //     switch (keyCode) {
+    //         case 32: // space
+    //         case 13: // enter
+    //         case 39: // right arrow
+    //             nextSlide();
+    //             break;
+    //         case 37: // left arrow
+    //             previousSlide();
+    //             break;
+    //     }
+    // }
+    //
+    // window.onresize = function () {
+    //     applyAspect(aspect)
+    // }
+    //
+    function hzoomin() {
+        updateRectZoom(10, 0);
+        // aspect.left += 10;
+        // aspect.right -= 10;
+        // applyAspect(aspect);
     }
 
-    function rightMove(){
-        aspect.l -= 10;
-        aspect.r -= 10;
-        applyAspect(aspect);
+    function vzoomin() {
+        updateRectZoom(0, 10);
+        // aspect.top += 10;
+        // aspect.bottom -= 10;
+        // applyAspect(aspect);
     }
 
-    function leftMove(){
-        aspect.l += 10;
-        aspect.r += 10;
-        applyAspect(aspect);
+    function hzoomout() {
+        updateRectZoom(-10, 0);
+        // aspect.left -= 10;
+        // aspect.right += 10;
+        // applyAspect(aspect);
     }
 
-    function topMove(){
-        aspect.t += 10;
-        aspect.b += 10;
-        applyAspect(aspect);
+    function vzoomout() {
+        updateRectZoom(0, -10);
+        // aspect.top -= 10;
+        // aspect.bottom += 10;
+        // applyAspect(aspect);
     }
 
-    function bottomMove(){
-        aspect.t -= 10;
-        aspect.b -= 10;
-        applyAspect(aspect);
+    function rightMove() {
+        updateRectMove(10, 0);
+        // aspect.left -= 10;
+        // aspect.right -= 10;
+        // applyAspect(aspect);
     }
+
+    function leftMove() {
+        updateRectMove(-10, 0);
+        // aspect.left += 10;
+        // aspect.right += 10;
+        // applyAspect(aspect);
+    }
+
+    function upMove() {
+        updateRectMove(0, -10);
+        // aspect.top += 10;
+        // aspect.bottom += 10;
+        // applyAspect(aspect);
+    }
+
+    function downMove() {
+        updateRectMove(0, 10);
+        // aspect.top -= 10;
+        // aspect.bottom -= 10;
+        // applyAspect(aspect);
+    }
+
+    // function reseting() {
+    //     aspect.top  = 0;
+    //     aspect.bottom  = 0;
+    //     aspect.left  = 0;
+    //     aspect.right  = 0;
+    //     applyAspect(aspect);
+    // }
 </script>
+<script src="mouse.js"></script>
 
 </html>
