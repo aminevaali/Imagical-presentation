@@ -8,25 +8,26 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body onclick="nextSlide()">
-    <img id="image" src="img/image.svg" alt="The total image of the presentation">
-    <dv class="hr" id="hrtop">
-    <div class="hr" id="hrbottom">
-    <div class="vr" id="vrleft"></div>
-    <div class="vr" id="vrright"></div>
-
+<img id="image" src="img/image.svg" alt="The total image of the presentation">
+<div class="hr" id="hrtop"></div>
+<div class="hr" id="hrbottom"></div>
+<div class="vr" id="vrleft"></div>
+<div class="vr" id="vrright"></div>
 </body>
 
 <script>
-    var originalWidth = 818;
-    var originalHeight = 1343;
+    let originalWidth = 818;
+    let originalHeight = 1343;
+
     class Aspect {
-        constructor(l,r,t,b){
+        constructor(l, r, t, b) {
             this.l = l;
             this.r = r;
             this.t = t;
             this.b = b;
         }
     }
+
     let currentLeft = 0;
     let currentTop = 0;
     let currentWidth = 0;
@@ -34,46 +35,38 @@
 
     let aspects = []
 
+    // aspects.push(new Aspect(13, 38, 112, 73));
+    // aspects.push(new Aspect(351, 140, 198, 240));
+    // aspects.push(new Aspect(148, 117, 11, 189));
 
-    aspects.push(new Aspect(0, 813, 0, 1343)) // whold page
-    aspects.push(new Aspect(21,164,61,119)) // Parallel programming
-    aspects.push(new Aspect(21,265,50,129)) // os and programming langs
-    aspects.push(new Aspect(192,324,18,92)) // OS
-    aspects.push(new Aspect(266,437,0,115)) // process vs thread
-    aspects.push(new Aspect(333,527,0,111)) // one core
-    aspects.push(new Aspect(487,618,43,95)) // concurrent
-    aspects.push(new Aspect(536,679,0,99)) // why concurrent
-    aspects.push(new Aspect(266,437,0,115)) // process vs thread
-    aspects.push(new Aspect(21,265,50,129)) // os and programming langs
-
-
-    aspects.push(new Aspect(53,444,95,220)) // multiprocessing and multithreading
-    aspects.push(new Aspect(0,261,184,335)) // multiprocessing
-    aspects.push(new Aspect(0,243,336,458)) // processes hierarchy
-    aspects.push(new Aspect(0,278,474,579)) // pid code
-    aspects.push(new Aspect(0,275,580,797)) // process tree
-    aspects.push(new Aspect(0,181,803,954)) // fork code
-    aspects.push(new Aspect(0,334,803,951)) // fork code and result
-    aspects.push(new Aspect(0,173,968,1123)) // fork and wait code
-    aspects.push(new Aspect(0,316,968,1119)) // fork and wate code and result
-    aspects.push(new Aspect(0,228,1140,1241)) // fork diagram
-
-    aspects.push(new Aspect(300,538,192,357)) // multithreading
-    aspects.push(new Aspect(347,500,376,473)) // threading operations
-    aspects.push(new Aspect(347,729,360,480)) // threading functions
-    aspects.push(new Aspect(350,570,500,637)) // threads code
-    aspects.push(new Aspect(333,685,492,640)) // threads code and functions
-    aspects.push(new Aspect(545,760,640,795)) // critical region
-
-    aspects.push(new Aspect(487,691,899,1014)) // any question
-    aspects.push(new Aspect(457,725,1060,1170)) // last aspect
+    // aspects.push(new Aspect(53,444,95,220)) // multiprocessing and multithreading
+    aspects.push(new Aspect(0, 261, 184, 335)) // multiprocessing
+    aspects.push(new Aspect(0, 90, 126, 173)) // multiprocessing
+    aspects.push(new Aspect(0, 243, 336, 458)) // processes hierarchy
+    aspects.push(new Aspect(0, 278, 474, 579)) // pid code
+    aspects.push(new Aspect(0, 275, 580, 797)) // process tree
+    aspects.push(new Aspect(0, 181, 803, 954)) // fork code
+    aspects.push(new Aspect(0, 334, 803, 951)) // fork code and result
+    aspects.push(new Aspect(0, 173, 968, 1123)) // fork and wait code
+    aspects.push(new Aspect(0, 316, 968, 1119)) // fork and wate code and result
+    aspects.push(new Aspect(0, 228, 1140, 1241)) // fork diagram
+    //
+    // aspects.push(new Aspect(300,538,192,357)) // multithreading
+    // aspects.push(new Aspect(347,500,376,473)) // threading operations
+    // aspects.push(new Aspect(347,729,360,480)) // threading functions
+    // aspects.push(new Aspect(350,570,500,637)) // threads code
+    // aspects.push(new Aspect(333,685,492,640)) // threads code and functions
+    // aspects.push(new Aspect(545,760,640,795)) // critical region
+    //
+    // aspects.push(new Aspect(487,691,899,1014)) // any question
+    // aspects.push(new Aspect(457,725,1060,1170)) // last aspect
 
 
     var image = document.getElementById("image")
     setImageAttrs(image, 0, 0, 1000, 600)
     applyAspect(aspects[0])
 
-    function applyAspect(aspect){
+    function applyAspect(aspect) {
         var l = aspect.l;
         var r = aspect.r;
         var t = aspect.t;
@@ -90,29 +83,29 @@
         var image = document.getElementById("image");
 
         var hrTop = 0;
-        var hrBottom = sceneHeight-1;
+        var hrBottom = sceneHeight - 1;
         var vrLeft = 0;
         var vrRight = sceneWidth - 1;
         var scale = 0
-        if(aspWidth/sceneWidth > aspHeight/sceneHeight){// w is larger
+        if (aspWidth / sceneWidth > aspHeight / sceneHeight) {// w is larger
             scale = sceneWidth / aspWidth;
             slideWidth = originalWidth * scale;
             slideHeight = originalHeight * scale;
-            slideLeft = - l * scale;
-    
+            slideLeft = -l * scale;
+
             var B = t * scale;
             var C = (sceneHeight - aspHeight * scale) / 2;
             A = B - C;
             slideTop = -A;
             image.style.top = slideTop.toString() + "px";
-            
+
             hrTop = C;
             hrBottom = C + aspHeight * scale;
-        }else {
+        } else {
             scale = sceneHeight / aspHeight;
             slideWidth = originalWidth * scale;
             slideHeight = originalHeight * scale;
-            slideTop = - t * scale;
+            slideTop = -t * scale;
 
             var y = l * scale;
             var z = (sceneWidth - aspWidth * scale) / 2;
@@ -133,33 +126,35 @@
         document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
         document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
         document.getElementById("vrright").style.left = vrRight.toString() + "px";
-
     }
 
-    function setImageAttrs(image, top, left, width, height){
+    function setImageAttrs(image, top, left, width, height) {
         image.style.top = top.toString() + "px";
         image.style.left = left.toString() + "px";
         image.style.width = width.toString() + "px";
         image.style.height = height.toString() + "px";
     }
+
     slide = 0;
-    function nextSlide(){
+
+    function nextSlide() {
         slide = (slide + 1) % aspects.length
         applyAspect(aspects[slide])
     }
 
-    function previousSlide(){
-        if(slide > 0){
+    function previousSlide() {
+        if (slide > 0) {
             slide--;
             applyAspect(aspects[slide])
         }
     }
 
     document.addEventListener("keydown", keyHandler, false);
-    function keyHandler(e){
+
+    function keyHandler(e) {
         keyCode = e.keyCode
         console.log(keyCode);
-        switch(keyCode){
+        switch (keyCode) {
             case 32: // space
             case 13: // enter
             case 39: // right arrow
@@ -172,7 +167,8 @@
                 break;
         }
     }
-    window.onresize = function(event){
+
+    window.onresize = function (event) {
         applyAspect(aspects[slide])
     }
 
