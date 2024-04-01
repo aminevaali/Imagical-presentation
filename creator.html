@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <img id="image" src="img/image.svg" alt="The total image of the presentation">
+    <img id="image" src="img/image.png" alt="The total image of the presentation">
     <dv class="hr" id="hrtop">
     <div class="hr" id="hrbottom">
     <div class="vr" id="vrleft"></div>
@@ -32,8 +32,10 @@
 </body>
 
 <script>
-    var originalWidth = 818;
-    var originalHeight = 1343;
+    let image = document.getElementById("image");
+    let originalWidth = image.naturalWidth;
+    let originalHeight = image.naturalHeight;
+
     class Aspect {
         constructor(l,r,t,b){
             this.l = l;
@@ -44,7 +46,6 @@
     }
     var aspect = new Aspect(0, originalWidth, 0, originalHeight);
 
-    var image = document.getElementById("image");
     var aspectText = document.getElementById("aspect-text");
     applyAspect(aspect);
 

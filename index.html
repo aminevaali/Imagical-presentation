@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body onclick="nextSlide()">
-    <img id="image" src="img/image.svg" alt="The total image of the presentation">
+    <img id="image" src="img/image.png" alt="The total image of the presentation">
     <dv class="hr" id="hrtop">
     <div class="hr" id="hrbottom">
     <div class="vr" id="vrleft"></div>
@@ -17,8 +17,10 @@
 </body>
 
 <script>
-    var originalWidth = 818;
-    var originalHeight = 1343;
+    let image = document.getElementById("image")
+    let originalWidth = image.naturalWidth;
+    let originalHeight = image.naturalHeight;
+
     class Aspect {
         constructor(l,r,t,b){
             this.l = l;
@@ -34,7 +36,8 @@
 
     let aspects = []
 
-
+    // L: 620, R: 1176, T: 970, B:1336
+    aspects.push(new Aspect(620, 1176, 970, 1336))
     aspects.push(new Aspect(0, 813, 0, 1343)) // whold page
     aspects.push(new Aspect(21,164,61,119)) // Parallel programming
     aspects.push(new Aspect(21,265,50,129)) // os and programming langs
@@ -69,7 +72,6 @@
     aspects.push(new Aspect(457,725,1060,1170)) // last aspect
 
 
-    var image = document.getElementById("image")
     setImageAttrs(image, 0, 0, 1000, 600)
     applyAspect(aspects[0])
 
