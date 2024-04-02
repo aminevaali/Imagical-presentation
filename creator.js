@@ -66,5 +66,5 @@ bottomMoveButton.addEventListener("click", () =>
 // --------- End Toolbar buttons click handler initialization ---------
 
 
-// handling screen size changes (calculating by new window width and height)
+// handling screen size changes (calculating image attrs by new window width and height)
 window.onresize = () => applyAspect(aspect, image, aspectText);

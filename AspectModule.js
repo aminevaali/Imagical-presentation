@@ -2,7 +2,6 @@ class Aspect {
   static originalWidth = 20;
   static originalHeight = 20;
   static initial(originalWidth, originalHeight) {
-    console.log("initial", originalWidth, originalHeight);
     Aspect.originalWidth = originalWidth;
     Aspect.originalHeight = originalHeight;
   }
@@ -51,7 +50,6 @@ function applyAspect(aspect, image, aspectText) {
     let C = (sceneHeight - aspHeight * scale) / 2;
     let A = B - C;
     slideTop = -A;
-    image.style.top = slideTop.toString() + "px";
 
     hrTop = C;
     hrBottom = C + aspHeight * scale;
@@ -70,28 +68,34 @@ function applyAspect(aspect, image, aspectText) {
     vrRight = z + aspWidth * scale;
   }
 
-  image.style.width = slideWidth.toString() + "px";
-  image.style.left = slideLeft.toString() + "px";
-  image.style.height = slideHeight.toString() + "px";
-  image.style.top = slideTop.toString() + "px";
-  image.getBoundingClientRect().top;
+  setImageAttrs(image, slideTop, slideLeft, slideWidth, slideHeight);
 
   document.getElementById("hrtop").style.top = hrTop.toString() + "px";
   document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
   document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
   document.getElementById("vrright").style.left = vrRight.toString() + "px";
 
-  aspectText.innerHTML = "";
-  aspectText.innerHTML +=
-    "L: " +
-    aspect.l +
-    ", R: " +
-    aspect.r +
-    ", T: " +
-    aspect.t +
-    ", B:" +
-    aspect.b;
+  if (aspectText) {
+    aspectText.innerHTML =
+      "L: " +
+      aspect.l +
+      ", R: " +
+      aspect.r +
+      ", T: " +
+      aspect.t +
+      ", B:" +
+      aspect.b;
+  }
 }
+
+// setting top, left, width, height for an image.
+// moving and resizing the image to fulfill the aspect that have to be applied
+function setImageAttrs(image, top, left, width, height) {
+    image.style.top = top.toString() + "px";
+    image.style.left = left.toString() + "px";
+    image.style.width = width.toString() + "px";
+    image.style.height = height.toString() + "px";
+  }
 
 function hzoomin(aspect, image, aspectText) {
   aspect.l += 10;
