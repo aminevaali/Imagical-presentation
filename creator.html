@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Aspect Creator</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -15,171 +15,20 @@
     <div class="vr" id="vrright"></div>
 
     <div class="toolbar">
-        <button class="tool" onclick="hzoomin()">horizontal zoom in</button>
-        <button class="tool" onclick="hzoomout()">horizontal zoom out</button>
-        <button class="tool" onclick="vzoomin()">vertical zoom in</button>
-        <button class="tool" onclick="vzoomout()">vertical zoom out</button>
-        <button class="tool" onclick="rightMove()">right</button>
-        <button class="tool" onclick="leftMove()">left</button>
-        <button class="tool" onclick="topMove()">top</button>
-        <button class="tool" onclick="bottomMove()">bottom</button>
+        <button id="hzoomin" class="tool" >horizontal zoom in</button>
+        <button id="hzoomout" class="tool" >horizontal zoom out</button>
+        <button id="vzoomin" class="tool" >vertical zoom in</button>
+        <button id="vzoomout" class="tool" >vertical zoom out</button>
+        <button id="rightMove" class="tool" >right</button>
+        <button id="leftMove" class="tool" >left</button>
+        <button id="topMove" class="tool" >top</button>
+        <button id="bottomMove" class="tool" >bottom</button>
     </div>
 
     <span id="aspect-text">
 
     </span>
 
+    <script src="./creator.js" type="module"></script>
 </body>
-
-<script>
-    let image = document.getElementById("image");
-    let originalWidth = image.naturalWidth;
-    let originalHeight = image.naturalHeight;
-
-    class Aspect {
-        constructor(l,r,t,b){
-            this.l = l;
-            this.r = r;
-            this.t = t;
-            this.b = b;
-        }
-    }
-    var aspect = new Aspect(0, originalWidth, 0, originalHeight);
-
-    var aspectText = document.getElementById("aspect-text");
-    applyAspect(aspect);
-
-    function applyAspect(aspect){
-        var l = aspect.l;
-        var r = aspect.r;
-        var t = aspect.t;
-        var b = aspect.b;
-        var aspWidth = r - l;
-        var aspHeight = b - t;
-        var sceneWidth = window.innerWidth;
-        var sceneHeight = window.innerHeight;
-
-        var slideWidth = 0;
-        var slideHeight = 0;
-        var slideTop = 0;
-        var slideLeft = 0;
-
-        var hrTop = 0;
-        var hrBottom = sceneHeight-1;
-        var vrLeft = 0;
-        var vrRight = sceneWidth - 1;
-        var scale = 0
-        if(aspWidth/sceneWidth > aspHeight/sceneHeight){// w is larger
-            scale = sceneWidth / aspWidth;
-            slideWidth = originalWidth * scale;
-            slideHeight = originalHeight * scale;
-            slideLeft = - l * scale;
-    
-            var B = t * scale;
-            var C = (sceneHeight - aspHeight * scale) / 2;
-            A = B - C;
-            slideTop = -A;
-            image.style.top = slideTop.toString() + "px";
-            
-            hrTop = C;
-            hrBottom = C + aspHeight * scale;
-        }else {
-            scale = sceneHeight / aspHeight;
-            slideWidth = originalWidth * scale;
-            slideHeight = originalHeight * scale;
-            slideTop = - t * scale;
-
-            var y = l * scale;
-            var z = (sceneWidth - aspWidth * scale) / 2;
-            var x = y - z;
-            slideLeft = -x;
-
-            vrLeft = z;
-            vrRight = z + aspWidth * scale;
-        }
-
-        image.style.width = slideWidth.toString() + "px";
-        image.style.left = slideLeft.toString() + "px";
-        image.style.height = slideHeight.toString() + "px";
-        image.style.top = slideTop.toString() + "px";
-        image.getBoundingClientRect().top
-
-        document.getElementById("hrtop").style.top = hrTop.toString() + "px";
-        document.getElementById("hrbottom").style.top = hrBottom.toString() + "px";
-        document.getElementById("vrleft").style.left = vrLeft.toString() + "px";
-        document.getElementById("vrright").style.left = vrRight.toString() + "px";
-
-        aspectText.innerHTML = "";
-        aspectText.innerHTML += "L: " + aspect.l + ", R: " + aspect.r + ", T: " + aspect.t + ", B:" + aspect.b; 
-    }
-
-    /*
-    document.addEventListener("keydown", keyHandler, false);
-    function keyHandler(e){
-        keyCode = e.keyCode
-        switch(keyCode){
-            case 32: // space
-            case 13: // enter
-            case 39: // right arrow
-                nextSlide();
-                break;
-            case 37: // left arrow
-                previousSlide();
-                break;
-        }
-    }
-    */
-    window.onresize = function(event){
-        applyAspect(aspect)
-    }
-
-    function hzoomin(){
-        aspect.l += 10;
-        aspect.r -= 10;
-        applyAspect(aspect);
-    }
-
-    function vzoomin(){
-        aspect.t += 10;
-        aspect.b -= 10;
-        applyAspect(aspect);
-    }
-
-    function hzoomout(){
-        aspect.l -= 10;
-        aspect.r += 10;
-        applyAspect(aspect);
-    }
-
-    function vzoomout(){
-        aspect.t -= 10;
-        aspect.b += 10;
-        applyAspect(aspect);
-    }
-
-    function rightMove(){
-        aspect.l -= 10;
-        aspect.r -= 10;
-        applyAspect(aspect);
-    }
-
-    function leftMove(){
-        aspect.l += 10;
-        aspect.r += 10;
-        applyAspect(aspect);
-    }
-
-    function topMove(){
-        aspect.t += 10;
-        aspect.b += 10;
-        applyAspect(aspect);
-    }
-
-    function bottomMove(){
-        aspect.t -= 10;
-        aspect.b -= 10;
-        applyAspect(aspect);
-    }
-</script>
-
 </html>
